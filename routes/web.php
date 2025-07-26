@@ -28,11 +28,9 @@ Route::get('/sitemap.xml', function () {
     
     // Main pages
     $mainPages = [
-        ['url' => route('welcome'), 'changefreq' => 'daily', 'priority' => '1.0'],
-        ['url' => route('frontend.news.index'), 'changefreq' => 'daily', 'priority' => '0.9'],
-        ['url' => route('frontend.complaints.index'), 'changefreq' => 'daily', 'priority' => '0.8'],
-        ['url' => route('login'), 'changefreq' => 'monthly', 'priority' => '0.3'],
-        ['url' => route('register'), 'changefreq' => 'monthly', 'priority' => '0.3'],
+        ['url' => url('/'), 'changefreq' => 'daily', 'priority' => '1.0'],
+        ['url' => url('/berita'), 'changefreq' => 'daily', 'priority' => '0.9'],
+        ['url' => url('/pengaduan'), 'changefreq' => 'daily', 'priority' => '0.8'],
     ];
     
     foreach ($mainPages as $page) {
