@@ -8,9 +8,11 @@
       <span class="text-muted fw-light">Portal Parakan / Pengaduan /</span> Detail Pengaduan
     </h4>
     <div class="d-flex gap-2">
-      <a href="{{ route('complaint-response.create', ['complaint_id' => $complaint->id]) }}" class="btn btn-info">
-        <i class="bx bx-pencil me-1"></i> Tanggapi
-      </a>
+      @if (Auth::user()->role == 'admin')
+        <a href="{{ route('complaint-response.create', ['complaint_id' => $complaint->id]) }}" class="btn btn-info">
+          <i class="bx bx-pencil me-1"></i> Tanggapi
+        </a>
+      @endif
       <a href="{{ route('complaints.index') }}" class="btn btn-outline-secondary">
         <i class="bx bx-arrow-back me-1"></i> Kembali
       </a>
@@ -205,73 +207,75 @@
       </div>
 
       <!-- Responses -->
-      <div class="card">
-        <div class="card-header">
-          <h6 class="mb-0">
-            <i class="bx bx-message-square-detail me-2"></i>Tanggapan Pengaduan
-          </h6>
-        </div>
-        <div class="card-body">
-          @if($complaint->responses && $complaint->responses->count() > 0)
-            <div class="mb-3">
-              <small class="text-muted">{{ $complaint->responses->count() }} tanggapan ditemukan</small>
-            </div>
-            
-            @foreach($complaint->responses->take(3) as $response)
-              <div class="border-start border-primary border-3 ps-3 mb-3">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                  <div>
-                    <h6 class="mb-1">
-                      Tanggapan #{{ $response->id }}
-                      @if($response->status == 'pending')
-                        <span class="badge bg-warning ms-2">Pending</span>
-                      @elseif($response->status == 'process')
-                        <span class="badge bg-info ms-2">Diproses</span>
-                      @elseif($response->status == 'resolved')
-                        <span class="badge bg-success ms-2">Selesai</span>
-                      @endif
-                    </h6>
-                    <small class="text-muted">{{ $response->user->name ?? 'Admin' }} • {{ $response->created_at->format('d M Y, H:i') }}</small>
-                  </div>
-                  <a href="{{ route('complaint-response.show', $response->id) }}" class="btn btn-sm btn-outline-primary">
-                    <i class="bx bx-show"></i>
-                  </a>
-                </div>
-                <p class="mb-0 small">{!! Str::limit($response->response, 150) !!}</p>
+      @if (Auth::user()->role == 'admin')
+        <div class="card">
+          <div class="card-header">
+            <h6 class="mb-0">
+              <i class="bx bx-message-square-detail me-2"></i>Tanggapan Pengaduan
+            </h6>
+          </div>
+          <div class="card-body">
+            @if($complaint->responses && $complaint->responses->count() > 0)
+              <div class="mb-3">
+                <small class="text-muted">{{ $complaint->responses->count() }} tanggapan ditemukan</small>
               </div>
-            @endforeach
-            
-            @if($complaint->responses->count() > 3)
-              <div class="text-center">
-                <small class="text-muted">dan {{ $complaint->responses->count() - 3 }} tanggapan lainnya</small>
+              
+              @foreach($complaint->responses->take(3) as $response)
+                <div class="border-start border-primary border-3 ps-3 mb-3">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <h6 class="mb-1">
+                        Tanggapan #{{ $response->id }}
+                        @if($response->status == 'pending')
+                          <span class="badge bg-warning ms-2">Pending</span>
+                        @elseif($response->status == 'process')
+                          <span class="badge bg-info ms-2">Diproses</span>
+                        @elseif($response->status == 'resolved')
+                          <span class="badge bg-success ms-2">Selesai</span>
+                        @endif
+                      </h6>
+                      <small class="text-muted">{{ $response->user->name ?? 'Admin' }} • {{ $response->created_at->format('d M Y, H:i') }}</small>
+                    </div>
+                    <a href="{{ route('complaint-response.show', $response->id) }}" class="btn btn-sm btn-outline-primary">
+                      <i class="bx bx-show"></i>
+                    </a>
+                  </div>
+                  <p class="mb-0 small">{!! Str::limit($response->response, 150) !!}</p>
+                </div>
+              @endforeach
+              
+              @if($complaint->responses->count() > 3)
+                <div class="text-center">
+                  <small class="text-muted">dan {{ $complaint->responses->count() - 3 }} tanggapan lainnya</small>
+                </div>
+              @endif
+              
+              <hr>
+              
+              <div class="d-grid gap-2">
+                <a href="{{ route('complaint-response.create', ['complaint_id' => $complaint->id]) }}" class="btn btn-primary">
+                  <i class="bx bx-plus me-2"></i>Tambah Tanggapan
+                </a>
+                
+                @if($complaint->responses->count() > 0)
+                  <a href="{{ route('complaint-response.index', ['complaint_id' => $complaint->id]) }}" class="btn btn-outline-secondary">
+                    <i class="bx bx-list-ul me-2"></i>Lihat Semua Tanggapan
+                  </a>
+                @endif
+              </div>
+            @else
+              <div class="text-center py-3">
+                <i class="bx bx-message-square-x" style="font-size: 2rem; color: #ddd;"></i>
+                <h6 class="mt-2 text-muted">Belum ada tanggapan</h6>
+                <p class="text-muted small mb-3">Pengaduan ini belum memiliki tanggapan</p>
+                <a href="{{ route('complaint-response.create', ['complaint_id' => $complaint->id]) }}" class="btn btn-primary">
+                  <i class="bx bx-plus me-2"></i>Buat Tanggapan Pertama
+                </a>
               </div>
             @endif
-            
-            <hr>
-            
-            <div class="d-grid gap-2">
-              <a href="{{ route('complaint-response.create', ['complaint_id' => $complaint->id]) }}" class="btn btn-primary">
-                <i class="bx bx-plus me-2"></i>Tambah Tanggapan
-              </a>
-              
-              @if($complaint->responses->count() > 0)
-                <a href="{{ route('complaint-response.index', ['complaint_id' => $complaint->id]) }}" class="btn btn-outline-secondary">
-                  <i class="bx bx-list-ul me-2"></i>Lihat Semua Tanggapan
-                </a>
-              @endif
-            </div>
-          @else
-            <div class="text-center py-3">
-              <i class="bx bx-message-square-x" style="font-size: 2rem; color: #ddd;"></i>
-              <h6 class="mt-2 text-muted">Belum ada tanggapan</h6>
-              <p class="text-muted small mb-3">Pengaduan ini belum memiliki tanggapan</p>
-              <a href="{{ route('complaint-response.create', ['complaint_id' => $complaint->id]) }}" class="btn btn-primary">
-                <i class="bx bx-plus me-2"></i>Buat Tanggapan Pertama
-              </a>
-            </div>
-          @endif
+          </div>
         </div>
-      </div>
+      @endif
     </div>
   </div>
 
