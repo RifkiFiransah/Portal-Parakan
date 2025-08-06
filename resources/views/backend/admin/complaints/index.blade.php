@@ -235,11 +235,13 @@
                                                 data-bs-placement="top" title="Lihat Detail">
                                                 <i class="bx bx-show"></i>
                                             </a>
-                                            <a href="{{ route('complaint-response.create', ['complaint_id' => $item->id]) }}"
-                                                class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="Tanggapi Pengaduan">
-                                                <i class="bx bx-reply"></i>
-                                            </a>
+                                            @if (Auth::user()->role == 'admin')
+                                                <a href="{{ route('complaint-response.create', ['complaint_id' => $item->id]) }}"
+                                                    class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip"
+                                                    data-bs-placement="top" title="Tanggapi Pengaduan">
+                                                    <i class="bx bx-reply"></i>
+                                                </a>
+                                            @endif
                                             <a href="{{ route('complaints.edit', $item->id) }}"
                                                 class="btn btn-sm btn-outline-warning" data-bs-toggle="tooltip"
                                                 data-bs-placement="top" title="Edit Pengaduan">
@@ -263,7 +265,8 @@
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <div>
                             <small class="text-muted">
-                                Menampilkan {{ $complaints->firstItem() }} - {{ $complaints->lastItem() }} dari {{ $complaints->total() }}
+                                Menampilkan {{ $complaints->firstItem() }} - {{ $complaints->lastItem() }} dari
+                                {{ $complaints->total() }}
                                 pengaduan
                             </small>
                         </div>

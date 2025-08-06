@@ -227,47 +227,49 @@
       </div>
 
       <!-- Actions -->
-      <div class="card">
-        <div class="card-header">
-          <h6 class="mb-0">
-            <i class="bx bx-cog me-2"></i>Aksi
-          </h6>
-        </div>
-        <div class="card-body">
-          <div class="d-grid gap-2">
-            <a href="{{ route('news.edit', $news->id) }}" class="btn btn-warning">
-              <i class="bx bx-edit me-2"></i>Edit Berita
-            </a>
-            
-            {{-- @if($news->status == 'draft')
-              <form action="{{ route('news.update', $news->id) }}" method="POST" class="d-inline">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="status" value="published">
-                <button type="submit" class="btn btn-success w-100">
-                  <i class="bx bx-check me-2"></i>Publikasikan
-                </button>
-              </form>
-            @else
-              <form action="{{ route('news.update', $news->id) }}" method="POST" class="d-inline">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="status" value="draft">
-                <button type="submit" class="btn btn-outline-secondary w-100">
-                  <i class="bx bx-edit me-2"></i>Jadikan Draft
-                </button>
-              </form>
-            @endif --}}
-            
-            <hr>
-            
-            <button type="button" class="btn btn-outline-danger" 
-                    onclick="confirmDelete({{ $news->id }}, '{{ $news->title }}')">
-              <i class="bx bx-trash me-2"></i>Hapus Berita
-            </button>
+      @if (Auth::user()->role == 'admin')
+        <div class="card">
+          <div class="card-header">
+            <h6 class="mb-0">
+              <i class="bx bx-cog me-2"></i>Aksi
+            </h6>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <a href="{{ route('news.edit', $news->id) }}" class="btn btn-warning">
+                <i class="bx bx-edit me-2"></i>Edit Berita
+              </a>
+              
+              {{-- @if($news->status == 'draft')
+                <form action="{{ route('news.update', $news->id) }}" method="POST" class="d-inline">
+                  @csrf
+                  @method('PUT')
+                  <input type="hidden" name="status" value="published">
+                  <button type="submit" class="btn btn-success w-100">
+                    <i class="bx bx-check me-2"></i>Publikasikan
+                  </button>
+                </form>
+              @else
+                <form action="{{ route('news.update', $news->id) }}" method="POST" class="d-inline">
+                  @csrf
+                  @method('PUT')
+                  <input type="hidden" name="status" value="draft">
+                  <button type="submit" class="btn btn-outline-secondary w-100">
+                    <i class="bx bx-edit me-2"></i>Jadikan Draft
+                  </button>
+                </form>
+              @endif --}}
+              
+              <hr>
+              
+              <button type="button" class="btn btn-outline-danger" 
+                      onclick="confirmDelete({{ $news->id }}, '{{ $news->title }}')">
+                <i class="bx bx-trash me-2"></i>Hapus Berita
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      @endif
     </div>
   </div>
 
