@@ -56,73 +56,205 @@
                         <h5 class="mb-0"><i class="bx bx-edit me-2"></i>Informasi Pengajuan Surat</h5>
                     </div>
                     <div class="card-body">
-                        <!-- NIK -->
+                        <!-- Dropdown Jenis Surat -->
                         <div class="mb-3">
-                            <label for="nik" class="form-label">Nomor Induk Kependudukan (NIK) <span
-                                    class="text-danger">*</span></label>
-                            <input type="number" class="form-control @error('nik') is-invalid @enderror" id="nik"
-                                name="nik" value="{{ old('nik') }}" placeholder="Masukkan NIK..."
-                                required>
-                            @error('nik')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                       
-                        <!-- KK -->
-                        <div class="mb-3">
-                            <label for="no_kk" class="form-label">Nomor Kartu Keluarga (KK) <span
-                                    class="text-danger">*</span></label>
-                            <input type="number" class="form-control @error('no_kk') is-invalid @enderror" id="no_kk"
-                                name="no_kk" value="{{ old('no_kk') }}" placeholder="Masukkan KK..."
-                                required>
-                            @error('no_kk')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label for="jenis_surat" class="form-label">Jenis Keperluan Surat</label>
+                            <select name="jenis_surat" id="jenis_surat" class="form-select">
+                                <option disabled selected>Pilih jenis surat...</option>
+                                <option value="tidak_mampu">Surat Keterangan Tidak Mampu</option>
+                                <option value="usaha">Surat Keterangan Usaha</option>
+                                <option value="domisili">Surat Keterangan Domisili</option>
+                                <option value="belum_menikah">Surat Keterangan Belum Menikah</option>
+                            </select>
                         </div>
 
-                        <!-- Name -->
                         <div class="mb-3">
-                            <label for="name" class="form-label">Nama Lengkap <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                name="name" value="{{ old('name') }}" placeholder="Masukkan nama lengkap..."
-                                required>
-                            @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label>Nama</label>
+                            <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                         </div>
                         
-                        <!-- NO HP -->
-                        <div class="mb-3">
-                            <label for="no_hp" class="form-label">Nomor Handphone <span
-                                    class="text-danger">*</span></label>
-                            <input type="number" class="form-control @error('no_hp') is-invalid @enderror" id="no_hp"
-                                name="no_hp" value="{{ old('no_hp') }}" placeholder="Masukkan nomor handphone..."
-                                required>
-                            @error('no_hp')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Tempat Lahir</label>
+                                <input type="text" name="tempat_lahir" class="form-control"
+                                    value="{{ old('tempat_lahir') }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Tanggal Lahir</label>
+                                <input type="date" name="tanggal_lahir" class="form-control"
+                                    value="{{ old('tanggal_lahir') }}">
+                            </div>
                         </div>
 
-                        <!-- Jenis Surat -->
                         <div class="mb-3">
-                            <label for="jenis_surat" class="form-label">Jenis Keperluan Surat<span
-                                    class="text-danger">*</span></label>
-                            <select name="jenis_surat" id="jenis_surat" class="form-select @error('jenis_surat') is-invalid @enderror">
-                                <option disabled selected>Pilih jenis surat...</option>
-                                <option value="surat keterangan domisili" {{ old('jenis_surat') == 'surat keterangan domisili' ? 'selected' : '' }}>Surat Ketarangan Domisili</option>
-                                <option value="surat keterangan usaha" {{ old('jenis_surat') == 'surat keterangan usaha' ? 'selected' : '' }}>Surat Keterangan Usaha</option>
-                                <option value="surat keterangan tidak mampu" {{ old('jenis_surat') == 'surat keterangan tidak mampu' ? 'selected' : '' }}>Surat Keterangan Tidak Mampu</option>
-                                <option value="surat keterangan kematian" {{ old('jenis_surat') == 'surat keterangan kematian' ? 'selected' : '' }}>Surat Keterangan Kematian</option>
-                                <option value="surat keterangan lahir" {{ old('jenis_surat') == 'surat keterangan lahir' ? 'selected' : '' }}>Surat Keterangan Lahir</option>
-                                <option value="surat keterangan pindah" {{ old('jenis_surat') == 'surat keterangan pindah' ? 'selected' : '' }}>Surat Keterangan Pindah</option>
-                                <option value="surat keterangan belum menikah" {{ old('jenis_surat') == 'surat keterangan belum menikah' ? 'selected' : '' }}>Surat Keterangan Belum Menikah</option>
+                            <label>Jenis Kelamin</label>
+                            <select name="jenis_kelamin" class="form-select">
+                                <option value="" disabled selected>Pilih...</option>
+                                <option value="Laki-laki"
+                                    {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                <option value="Perempuan"
+                                    {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
                             </select>
-                            @error('jenis_surat')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
+                        <!-- Form Dinamis -->
+                        <div id="form-dinamis">
+                            <!-- Tidak Mampu -->
+                            <div class="form-jenis" id="form-tidak_mampu" style="display:none;">
+
+                                <div class="mb-3">
+                                    <label>Nama Sekolah</label>
+                                    <input type="text" name="nama_sekolah" class="form-control"
+                                        value="{{ old('nama_sekolah') }}">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Nama Orang Tua</label>
+                                    <input type="text" name="nama_ortu" class="form-control"
+                                        value="{{ old('nama_ortu') }}">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Pekerjaan Orang Tua</label>
+                                    <input type="text" name="pekerjaan_ortu" class="form-control"
+                                        value="{{ old('pekerjaan_ortu') }}">
+                                </div>
+
+                            </div>
+
+                            <!-- Usaha -->
+                            <div class="form-jenis" id="form-usaha" style="display:none;">
+                                {{-- <div class="mb-3">
+                                    <label>Nama</label>
+                                    <input type="text" name="name" class="form-control" value="{{ old('name') }}">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label>Tempat Lahir</label>
+                                        <input type="text" name="tempat_lahir" class="form-control"
+                                            value="{{ old('tempat_lahir') }}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label>Tanggal Lahir</label>
+                                        <input type="date" name="tanggal_lahir" class="form-control"
+                                            value="{{ old('tanggal_lahir') }}">
+                                    </div>
+                                </div> --}}
+
+                                <div class="mb-3">
+                                    <label>Pekerjaan</label>
+                                    <input type="text" name="pekerjaan" class="form-control"
+                                        value="{{ old('pekerjaan') }}">
+                                </div>
+
+                                {{-- <div class="mb-3">
+                                    <label>Alamat</label>
+                                    <textarea name="alamat" class="form-control">{{ old('alamat') }}</textarea>
+                                </div> --}}
+
+                                <div class="mb-3">
+                                    <label>Jenis Usaha</label>
+                                    <input type="text" name="jenis_usaha" class="form-control"
+                                        value="{{ old('jenis_usaha') }}">
+                                </div>
+                            </div>
+
+
+                            <!-- Domisili -->
+                            <div class="form-jenis" id="form-domisili" style="display:none;">
+                                {{-- <div class="mb-3">
+                                    <label>Nama</label>
+                                    <input type="text" name="name" class="form-control"
+                                        value="{{ old('name') }}">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label>Tempat Lahir</label>
+                                        <input type="text" name="tempat_lahir" class="form-control"
+                                            value="{{ old('tempat_lahir') }}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label>Tanggal Lahir</label>
+                                        <input type="date" name="tanggal_lahir" class="form-control"
+                                            value="{{ old('tanggal_lahir') }}">
+                                    </div>
+                                </div> --}}
+
+                                <div class="mb-3">
+                                    <label>NIK</label>
+                                    <input type="number" name="nik" class="form-control"
+                                        value="{{ old('nik') }}">
+                                </div>
+
+                                {{-- <div class="mb-3">
+                                    <label>Jenis Kelamin</label>
+                                    <select name="jenis_kelamin" class="form-select">
+                                        <option value="">Pilih...</option>
+                                        <option value="Laki-laki"
+                                            {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                        <option value="Perempuan"
+                                            {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                                    </select>
+                                </div> --}}
+
+                                <div class="mb-3">
+                                    <label>Alamat KTP</label>
+                                    <textarea name="alamat_ktp" class="form-control">{{ old('alamat_ktp') }}</textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Alamat Domisili</label>
+                                    <textarea name="alamat_domisili" class="form-control">{{ old('alamat_domisili') }}</textarea>
+                                </div>
+                            </div>
+
+
+                            <!-- Belum Menikah -->
+                            <div class="form-jenis" id="form-belum_menikah" style="display:none;">
+                                {{-- <div class="mb-3">
+                                    <label>Nama</label>
+                                    <input type="text" name="name" class="form-control"
+                                        value="{{ old('name') }}">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label>Tempat Lahir</label>
+                                        <input type="text" name="tempat_lahir" class="form-control"
+                                            value="{{ old('tempat_lahir') }}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label>Tanggal Lahir</label>
+                                        <input type="date" name="tanggal_lahir" class="form-control"
+                                            value="{{ old('tanggal_lahir') }}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Jenis Kelamin</label>
+                                    <select name="jenis_kelamin" class="form-select">
+                                        <option value="">Pilih...</option>
+                                        <option value="Laki-laki"
+                                            {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                        <option value="Perempuan"
+                                            {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                                    </select>
+                                </div> --}}
+
+                                {{-- <div class="mb-3">
+                                    <label>Alamat</label>
+                                    <textarea name="alamat" class="form-control">{{ old('alamat') }}</textarea>
+                                </div> --}}
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Alamat Saat Ini</label>
+                            <textarea name="alamat" class="form-control">{{ old('alamat') }}</textarea>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -173,6 +305,23 @@
     <!-- Summernote JS -->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/lang/summernote-id-ID.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            function showForm(jenis) {
+                $('.form-jenis').hide();
+                if (!jenis) return;
+                $('#form-' + jenis).show();
+            }
+
+            $('#jenis_surat').on('change', function() {
+                showForm($(this).val());
+            });
+
+            // tampilkan sesuai old() / nilai awal saat load
+            showForm($('#jenis_surat').val());
+        });
+    </script>
 
     <script>
         $(document).ready(function() {
