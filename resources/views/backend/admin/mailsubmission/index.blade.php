@@ -9,43 +9,38 @@
         </h4>
     </div>
 @endsection
+
 @section('content')
     <!-- Filter and Search -->
     <div class="card mb-4">
         <div class="card-body">
             <form method="GET" action="{{ route('mail-submissions.index') }}">
-                @csrf
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="form-label">Cari Pengajuan</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bx bx-search"></i></span>
                             <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                placeholder="Judul Pengajuan...">
+                                placeholder="Nama / NIK / Jenis Surat...">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Status</label>
                         <select class="form-select" name="status">
                             <option value="">Semua Status</option>
-                            <option value="resolved" {{ request('status') == 'resolved' ? 'selected' : '' }}>
-                                Diterima</option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>
-                                Pending</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="process" {{ request('status') == 'process' ? 'selected' : '' }}>Proses</option>
+                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Selesai</option>
                         </select>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Tanggal</label>
                         <input type="date" class="form-control" name="date" value="{{ request('date') }}">
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">&nbsp;</label>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bx bx-search me-1"></i> Filter
-                            </button>
-                        </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bx bx-search me-1"></i> Filter
+                        </button>
                     </div>
                 </div>
             </form>
@@ -69,6 +64,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="card">
                 <div class="card-body">
@@ -84,6 +80,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="card">
                 <div class="card-body">
@@ -99,6 +96,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="card">
                 <div class="card-body">
@@ -116,28 +114,27 @@
         </div>
     </div>
 
-    <!-- Content -->
+
+    <!-- List Pengajuan Surat -->
     <div class="card">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    Daftar Pengajuan Surat
-                </h5>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Daftar Pengajuan Surat</h5>
+            @if (Auth::user()->role == 'admin')
                 <a href="{{ route('mail-submissions.create') }}" class="btn btn-primary">
                     <i class="bx bx-plus me-2"></i>Tambah Pengajuan Surat
                 </a>
-            </div>
+            @endif
         </div>
         <div class="card-body">
-            @if (isset($mails) && $mails->count() > 0)
+            @if ($mails->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover align-middle">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>NIK</th>
-                                <th>KK</th>
-                                <th>Name</th>
+                                <th>No. KK</th>
+                                <th>Nama</th>
                                 <th>Jenis Surat</th>
                                 <th>Deskripsi</th>
                                 <th>Status</th>
@@ -148,73 +145,38 @@
                         <tbody>
                             @foreach ($mails as $mail)
                                 <tr>
-                                    <td>
-                                        <span class="fw-bold">#{{ $mail->id }}</span>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            <small class="mb-0">{{ $mail->nik }}</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            <small class="mb-0">{{ $mail->no_kk }}</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            <h6 class="mb-0">{{ $mail->name }}</h6>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            <h6 class="mb-0">{{ $mail->jenis_surat }}</h6>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="">
-                                            <small class="text-muted">{!! Str::limit($mail->description, 50)  !!}</small>
-                                        </div>
-                                    </td>
+                                    <td><strong>#{{ $mail->id }}</strong></td>
+                                    <td>{{ $mail->nik }}</td>
+                                    <td>{{ $mail->no_kk }}</td>
+                                    <td>{{ $mail->name }}</td>
+                                    <td>{{ $mail->jenis_surat }}</td>
+                                    <td><small class="text-muted">{{ Str::limit(strip_tags($mail->description), 50) }}</small></td>
                                     <td>
                                         @if ($mail->status == 'pending')
-                                            <span class="badge bg-warning">
-                                                <i class="bx bx-time me-1"></i>Pending
-                                            </span>
+                                            <span class="badge bg-warning"><i class="bx bx-time me-1"></i>Pending</span>
                                         @elseif($mail->status == 'process')
-                                            <span class="badge bg-info">
-                                                <i class="bx bx-loader-circle me-1"></i>Diproses
-                                            </span>
+                                            <span class="badge bg-info"><i class="bx bx-loader-circle me-1"></i>Diproses</span>
                                         @elseif($mail->status == 'completed')
-                                            <span class="badge bg-success">
-                                                <i class="bx bx-check-circle me-1"></i>Selesai
-                                            </span>
+                                            <span class="badge bg-success"><i class="bx bx-check-circle me-1"></i>Selesai</span>
                                         @endif
                                     </td>
                                     <td>
                                         @if($mail->file)
-                                            <span class="badge bg-success">
-                                                <i class="bx bx-check me-1"></i>Tersedia
-                                            </span>
+                                            <span class="badge bg-success"><i class="bx bx-check me-1"></i>Tersedia</span>
                                         @else
-                                            <span class="badge bg-secondary">
-                                                <i class="bx bx-x me-1"></i>Belum ada
-                                            </span>
+                                            <span class="badge bg-secondary"><i class="bx bx-x me-1"></i>Belum ada</span>
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <div class="btn-group" role="group">
-                                            <a href="{{ route('mail-submissions.show', $mail->id) }}"
-                                                class="btn btn-sm btn-outline-primary" title="Lihat Detail">
+                                        <div class="btn-group">
+                                            <a href="{{ route('mail-submissions.show', $mail->id) }}" class="btn btn-sm btn-outline-primary" title="Lihat Detail">
                                                 <i class="bx bx-show"></i>
                                             </a>
                                             @if (Auth::user()->role == 'admin')
-                                                <a href="{{ route('mail-submissions.edit', $mail->id) }}"
-                                                    class="btn btn-sm btn-outline-secondary" title="Edit">
+                                                <a href="{{ route('mail-submissions.edit', $mail->id) }}" class="btn btn-sm btn-outline-secondary" title="Edit">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
-                                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                                    onclick="confirmDelete({{ $mail->id }})" title="Hapus">
+                                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ $mail->id }}, '{{ $mail->name }} - {{ $mail->jenis_surat }}')" title="Hapus">
                                                     <i class="bx bx-trash"></i>
                                                 </button>
                                             @endif
@@ -225,52 +187,41 @@
                         </tbody>
                     </table>
                 </div>
+
                 <!-- Pagination -->
-                @if (method_exists($mails, 'links'))
-                  <!-- Pagination -->
-                  <div class="d-flex justify-content-center mt-3">
-                      {{ $mails->links() }}
-                  </div>
-                  
-                @endif
+                <div class="d-flex justify-content-center mt-3">
+                    {{ $mails->links() }}
+                </div>
             @else
                 <div class="text-center py-5">
                     <i class="bx bx-message-square-x" style="font-size: 4rem; color: #ddd;"></i>
                     <h5 class="mt-3 text-muted">Belum ada Pengajuan Surat</h5>
                     <p class="text-muted">Pengajuan Surat akan muncul di sini setelah ditambahkan</p>
-                    <a href="{{ route('mail-submissions.create') }}" class="btn btn-primary">
-                        <i class="bx bx-plus me-2"></i>Tambah Pengajuan Surat Pertama
-                    </a>
+                    @if (Auth::user()->role == 'admin')
+                        <a href="{{ route('mail-submissions.create') }}" class="btn btn-primary">
+                            <i class="bx bx-plus me-2"></i>Tambah Pengajuan Surat Pertama
+                        </a>
+                    @endif
                 </div>
             @endif
         </div>
     </div>
 @endsection
 
-@section('scripts')
-    <script>
-        function confirmDelete(id) {
-            if (confirm('Apakah Anda yakin ingin menghapus Pengajuan Surat ini?')) {
-                // Create form and submit
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/mail-submission/${id}`;
-
-                const csrfToken = document.createElement('input');
-                csrfToken.type = 'hidden';
-                csrfToken.name = '_token';
-                csrfToken.value = '{{ csrf_token() }}';
-
-                const methodInput = document.createElement('input');
-                methodInput.type = 'hidden';
-                methodInput.name = '_method';
-                methodInput.value = 'DELETE';
-
-                form.appendChild(csrfToken);
-                form.appendChild(methodInput);
-                document.body.appendChild(form);
-                form.submit();
-            }
+@push('scripts')
+<script>
+    function confirmDelete(id, title) {
+        if (confirm(`Apakah Anda yakin ingin menghapus pengajuan surat "${title}"?`)) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/mail-submissions/${id}`;
+            form.innerHTML = `
+                @csrf
+                <input type="hidden" name="_method" value="DELETE">
+            `;
+            document.body.appendChild(form);
+            form.submit();
         }
-    </script>
-@endsection
+    }
+</script>
+@endpush
